@@ -1,0 +1,22 @@
+[{
+      "id": "p-1001",
+      "title": "Auriculares Eco 001",
+      "category": "Audio",
+      "price": 78320,
+      "currency": "ARS",
+      "stock": 71,
+      "rating": 5.5,
+      "imageUrl": "https://example.invalid/images/p-1001.jpg",
+      "createdAt": "2025-01-01T00:00:00Z"
+    },
+{
+      "id": "p-1002",
+      "title": "auto",
+      "category": "aaa",
+      "price": 32433,
+      "currency": "ARS",
+      "stock": 271,
+      "rating": 15.5,
+      "imageUrl": "https://example.invalid/images/p-1002.jpg",
+      "createdAt": "2024-03-14T00:00:00Z"
+}]
