@@ -1,23 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Product } from 'src/interface/product.interface';
-import * as fs from 'fs';
-import * as path from 'path';
+import axios from 'axios';
+
 @Injectable()
 export class ProductsService {
-private readonly products : Product[] =[];
-  constructor() {
-  const filePath = path.join(process.cwd(),'src','data','products.json',);
-  const rawData = fs.readFileSync(filePath, 'utf-8');
-  this.products = JSON.parse(rawData);
-  }
-  findAll(): Product[] {
-    return this.products;
+  private readonly catalogUrl: string;
+
+  constructor(private configService: ConfigService) {
+    this.catalogUrl = this.configService.getOrThrow<string>('CATALOG_SERVICE_URL');
   }
 
-  findOne(id: string):Product | undefined {
-    return this.products.find(product => product.id === id)
+  async findAll(): Promise<Product[]> {
+    try {
+      const response = await axios.get(this.catalogUrl);
+      return response.data;
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener productos del servicio externo',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
   }
 
-
-
+  async findOne(id: string): Promise<Product> {
+    try {
+      const response = await axios.get(`${this.catalogUrl}/${id}`);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        throw new HttpException(
+          `Producto con id ${id} no encontrado`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      throw new HttpException(
+        'Error al obtener producto del servicio externo',
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
+  }
 }
