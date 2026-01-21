@@ -16,10 +16,7 @@ export class ProductsService {
       const response = await axios.get(this.catalogUrl);
       return response.data;
     } catch (error) {
-      throw new HttpException(
-        'Error al obtener productos del servicio externo',
-        HttpStatus.SERVICE_UNAVAILABLE,
-      );
+      throw error;
     }
   }
 
@@ -28,16 +25,7 @@ export class ProductsService {
       const response = await axios.get(`${this.catalogUrl}/${id}`);
       return response.data;
     } catch (error) {
-      if (error.response?.status === 404) {
-        throw new HttpException(
-          `Producto con id ${id} no encontrado`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      throw new HttpException(
-        'Error al obtener producto del servicio externo',
-        HttpStatus.SERVICE_UNAVAILABLE,
-      );
+      throw error;
     }
   }
 }
