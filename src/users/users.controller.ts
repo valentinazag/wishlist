@@ -5,28 +5,9 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  async findAll() {
-    return await this.usersService.findAll();
-  }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.usersService.findOne(id);
-  }
-
-  @Post()
-  async create(@Body() data: any) {
-    return await this.usersService.create(data);
-  }
-
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() data: any) {
-    return await this.usersService.update(id, data);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.usersService.remove(id);
-  }
+    @Get(':id_user')
+    getUserWishlist(@Param('id_user') id_user: number){
+        return this.usersService.getUserWishlist(id_user);
+    }
 }
