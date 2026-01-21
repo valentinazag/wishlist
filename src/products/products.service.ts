@@ -1,23 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Product } from 'src/interface/product.interface';
-import * as fs from 'fs';
-import * as path from 'path';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+
+
 @Injectable()
 export class ProductsService {
-private readonly products : Product[] =[];
-  constructor() {
-  const filePath = path.join(process.cwd(),'src','data','products.json',);
-  const rawData = fs.readFileSync(filePath, 'utf-8');
-  this.products = JSON.parse(rawData);
+  private readonly catalogUrl: string;
+
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService){
+    this.catalogUrl = this.configService.getOrThrow<string>('CATALOG_SERVICE_URL');
+    }
+
+  async findAll(): Promise<Product[]> {
+      const response = await firstValueFrom(
+        this.httpService.get<Product[]>(this.catalogUrl),
+      );
+      return response.data;
+}
+
+  async findOne(id: string): Promise<Product> {
+      const response = await firstValueFrom(
+        this.httpService.get<Product>(`${this.catalogUrl}/${id}`)
+      )
+      return response.data;
   }
-  findAll(): Product[] {
-    return this.products;
-  }
-
-  findOne(id: string):Product | undefined {
-    return this.products.find(product => product.id === id)
-  }
-
-
-
 }
