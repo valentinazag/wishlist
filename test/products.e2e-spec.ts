@@ -6,7 +6,7 @@ import { AppModule } from '../src/app.module';
 describe('Products e2e', ()=>{
     let app: INestApplication;
 
-    beforeEach(async()=>{
+    beforeAll(async()=>{
         const moduleFixture = await Test.createTestingModule({
             imports:[AppModule],
         }).compile();
@@ -36,6 +36,8 @@ describe('Products e2e', ()=>{
         expect(product.status).toBe(404);
         expect(product.body.message).toBe("producto no encontrado")
   });
-        
+  afterAll(async () => {
+    await app.close();
+  });
 })
 

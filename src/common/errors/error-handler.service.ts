@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ErrorHandlerService{
-    handleError(error){  
+    handleError(error): never{  
     if (error.response?.status === 404) {
         throw new HttpException(
           "producto no encontrado",
