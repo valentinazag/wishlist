@@ -6,21 +6,21 @@ import { Wishlist } from '../domain/Wishlist';
 @Injectable()
 export class WishlistRepository {
 
-  async findWishlistProducts (id_user) {
+  async findWishlistProducts (idUser) {
     const result = await pool.query(
-      `SELECT * FROM wishlist WHERE id_user = $1`,
-      [id_user],
+      `SELECT * FROM wishlist WHERE idUser = $1`,
+      [idUser],
     );
     return result.rows.map(row => new Wishlist(row));
   }
 
-  async createWishlist(dataWishlist: { id_user: number; id_product: string }) {
+  async AddItemWishlist (dataWishlist: { idUser: number; idProduct: string }) {
     const result = await pool.query(
-      `INSERT INTO wishlist (id_user, id_product)
+      `INSERT INTO wishlist (idUser, idProduct)
        VALUES ($1, $2)
        RETURNING *`,
-      [dataWishlist.id_user, dataWishlist.id_product],
+      [dataWishlist.idUser, dataWishlist.idProduct],
     );
-    return new Wishlist(result.rows[0]);
+    return await new Wishlist(result.rows[0]);
   }
 }

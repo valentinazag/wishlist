@@ -12,13 +12,13 @@ export class UsersService {
               private readonly productsService: ProductsService
   ) {}
 
-    getUserWishlist(id_user: number){
-        return this.wishlitRepository.findWishlistProducts(id_user);
+    async getUserWishlist(idUser: number){
+        return await this.wishlitRepository.findWishlistProducts(idUser);
     }
 
 
-    async createWishlist(id_user: number, newProduct: WishlistDto) {
-    await this.productsService.findOne(newProduct.id_product);
-    return this.wishlitRepository.createWishlist({id_user, id_product : newProduct.id_product});
+    async AddItemWishlist (idUser: number, newProduct: WishlistDto) {
+    await this.productsService.findOne(newProduct.idProduct);
+    return await this.wishlitRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
   }
 }

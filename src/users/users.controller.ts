@@ -10,20 +10,23 @@ export class UsersController {
   ) {}
 
 
-    @Get(':id_user/wishlist')
-    getUserWishlist(@Param('id_user') id_user: number){
-        try {return this.usersService.getUserWishlist(id_user);}
+    @Get(':idUser/wishlist')
+    async getUserWishlist(@Param('idUser') idUser: number){
+        try {
+            return await this.usersService.getUserWishlist(idUser)
+        }
         catch(error){
             this.errorHandler.handleError(error);
         }
     }
 
-    @Post(':id_user/wishlist')
-    createWishlist(
-        @Param('id_user') id_user: number,
+    @Post(':idUser/wishlist')
+    async AddItemWishlist (
+        @Param('idUser') idUser: string,
         @Body() newProduct: WishlistDto){
+        const idUserParsed = Number(idUser)
        try{
-        return this.usersService.createWishlist(id_user, newProduct)
+        return await this.usersService.AddItemWishlist (idUserParsed, newProduct)
        }
       catch(error){
          this.errorHandler.handleError(error);

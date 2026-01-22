@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS wishlist (
   id SERIAL PRIMARY KEY,
   id_user INT NOT NULL,
-  id_product VARCHAR (50) NOT NULL
+  id_product VARCHAR (50) NOT NULL,
+  create_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
