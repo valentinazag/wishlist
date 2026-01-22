@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Wishlist } from 'src/domain/Wishlist';
-import { Product } from 'src/interface/product.interface';
 import { WishlistRepository } from './users.repository';
 import { WishlistDto } from 'src/dto/wishlist.dto';
 import { ProductsService } from 'src/products/products.service';
-import { error } from 'console';
+
 
 @Injectable()
 export class UsersService {
@@ -20,11 +17,8 @@ export class UsersService {
     }
 
 
-    createWishlist(id_user, id_product) {
-    const service = this.productsService.findOne( id_product);
-    if (!service){
-        throw error;
-    }
-    return this.wishlitRepository.createWishlist({id_user, id_product});
+    async createWishlist(id_user: number, newProduct: WishlistDto) {
+    await this.productsService.findOne(newProduct.id_product);
+    return this.wishlitRepository.createWishlist({id_user, id_product : newProduct.id_product});
   }
 }
