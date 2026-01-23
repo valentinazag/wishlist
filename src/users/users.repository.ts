@@ -8,7 +8,7 @@ export class WishlistRepository {
 
   async findWishlistProducts (idUser) {
     const result = await pool.query(
-      `SELECT id_product FROM wishlist WHERE id_user = $1`,
+      `SELECT id_product FROM wishlist WHERE id_user = $1 AND is_active IS TRUE`,
       [idUser],
     );
       return result.rows.map(row =>
@@ -16,6 +16,7 @@ export class WishlistRepository {
       id: row.id,
       idUser: row.id_user,
       idProduct: row.id_product,
+      isActive: row.is_active
     }),
    );
   }
@@ -27,6 +28,15 @@ export class WishlistRepository {
        VALUES ($1, $2)
        RETURNING *`,
       [dataWishlist.idUser, dataWishlist.idProduct],
+    );
+    return await new Wishlist(result.rows[0]);
+  }
+
+
+  async deleteItemWishlist(dataWishlist: { idUser: number; idProduct: string }){
+    const result = await pool.query(
+       `UPDATE wishlist SET is_active ='FALSE' WHERE id_user = $1 AND id_product = $2 `,
+       [dataWishlist.idUser, dataWishlist.idProduct]
     );
     return await new Wishlist(result.rows[0]);
   }
