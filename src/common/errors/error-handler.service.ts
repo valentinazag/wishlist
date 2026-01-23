@@ -16,7 +16,7 @@ export class ErrorHandlerService{
         );
     }
     else {throw new HttpException(
-      "error interno",
+      error.message,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
