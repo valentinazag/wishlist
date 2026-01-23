@@ -13,7 +13,15 @@ export class UsersService {
   ) {}
 
     async getUserWishlist(idUser: number){
-        return await this.wishlitRepository.findWishlistProducts(idUser);
+        const wishlist = await this.wishlitRepository.findWishlistProducts(idUser);
+        const productdIds = wishlist.map(wishlist => wishlist.idProduct);
+        if(productdIds.length === 0){
+          return [];
+        }
+        const wishlistProducts = await Promise.all(
+          productdIds.map(productId => this.productsService.findOne(productId))
+        )
+        return wishlistProducts;
     }
 
 

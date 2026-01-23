@@ -8,11 +8,11 @@ export class WishlistRepository {
 
   async findWishlistProducts (idUser) {
     const result = await pool.query(
-      `SELECT * FROM wishlist WHERE id_user = $1`,
+      `SELECT id_product FROM wishlist WHERE id_user = $1`,
       [idUser],
     );
-       return result.rows.map(row =>
-    new Wishlist({
+      return result.rows.map(row =>
+      new Wishlist({
       id: row.id,
       idUser: row.id_user,
       idProduct: row.id_product,
