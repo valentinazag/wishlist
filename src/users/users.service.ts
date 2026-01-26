@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { WishlistRepository } from './users.repository';
-import { WishlistDto } from 'src/dto/wishlist.dto';
-import { ProductsService } from 'src/products/products.service';
+import { WishlistDto } from '../dto/wishlist.dto';
+import { ProductsService } from '../products/products.service';
 
 
 @Injectable()

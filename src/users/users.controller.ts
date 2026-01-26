@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { WishlistDto } from 'src/dto/wishlist.dto';
+import { WishlistDto } from '../dto/wishlist.dto';
 import { ErrorHandlerService } from '../common/errors/error-handler.service';
 
 @Controller('users')
