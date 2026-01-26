@@ -27,10 +27,21 @@ export class UsersService {
 
     async AddItemWishlist (idUser: number, newProduct: WishlistDto) {
     await this.productsService.findOne(newProduct.idProduct);
-    return await this.wishlitRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
+    const result = await this.wishlitRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
+      if(result === 'ALREADY_EXIST'){
+        throw 'ALREADY_EXIST';
+      }
+    return result;
   }
 
   async deleteItemWishlist(idUser: number, idProduct: string) {
-    return await this.wishlitRepository.deleteItemWishlist({idUser, idProduct});
+    const result = await this.wishlitRepository.deleteItemWishlist({idUser, idProduct});
+    if(result === 'NOT_FOUND'){
+      throw 'NOT_FOUND'
+    }
+    if(result ==='ALREADY_DELETED'){
+      throw 'ALREADY_DELETED';
+    }
+    return result;
   }
-  }
+}

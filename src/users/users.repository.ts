@@ -55,10 +55,7 @@ export class WishlistRepository {
    }
 
    if(itemExist.isActive){
-     throw new HttpException(
-      'El producto ya etsa en la wishlist',
-      HttpStatus.NOT_FOUND,
-    );
+     return 'ALREADY_EXIST'
    }
 
     const result = await pool.query( 
@@ -77,17 +74,11 @@ export class WishlistRepository {
     const itemExist  = await this.findWishlistItem(dataWishlist)
 
     if(!itemExist){
-        throw new HttpException(
-        `El producto ${dataWishlist.idProduct} no se encuentra en la Wishlist del usuario ${dataWishlist.idUser}`,
-        HttpStatus.NOT_FOUND
-      );
+       return 'NOT_FOUND'
     }
 
     if(!itemExist.isActive){
-        throw new HttpException(
-        `El producto ${dataWishlist.idProduct} no se encuentra en la Wishlist del usuario ${dataWishlist.idUser}`,
-        HttpStatus.NOT_FOUND
-      );
+       return 'ALREADY_DELETED'
     }
 
     const result = await pool.query(

@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { WishlistDto } from '../dto/wishlist.dto';
-import { ErrorHandlerService } from '../common/errors/error-handler.service';
+import { ErrorHandlerUser } from '../common/errors/error-handler.user';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService,
-              private readonly errorHandler: ErrorHandlerService
+              private readonly errorHandlerUser: ErrorHandlerUser
   ) {}
 
 
@@ -16,7 +16,7 @@ export class UsersController {
             return await this.usersService.getUserWishlist(idUser)
         }
         catch(error){
-            this.errorHandler.handleError(error);
+            this.errorHandlerUser.handlerErrorUser(error);
         }
     }
 
@@ -29,7 +29,7 @@ export class UsersController {
         return await this.usersService.AddItemWishlist (idUserParsed, newProduct)
        }
       catch(error){
-         this.errorHandler.handleError(error);
+         this.errorHandlerUser.handlerErrorUser(error);
       }
     }
 
@@ -42,7 +42,7 @@ export class UsersController {
         return await this.usersService.deleteItemWishlist(idUserParsed, idProduct)
        }
       catch(error){
-         this.errorHandler.handleError(error);
+         this.errorHandlerUser.handlerErrorUser(error);
       }
     }
 

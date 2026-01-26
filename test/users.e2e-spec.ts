@@ -28,8 +28,15 @@ describe('Products e2e', ()=>{
             "imageUrl": "https://example.invalid/images/p-1044.jpg",
             "createdAt": "2025-01-01T00:00:00Z"}])
         }
-    )
+    );
    
+    it('should throw a 404 when the products doesnt exist in the user´s wishlist', async () => {
+          const product = await request(app.getHttpServer())
+          .delete('/users/10/wishlist/p-1002');
+          expect(product.status).toBe(404);
+          expect(product.body.message).toBe("el producto no esta en la wishlist")
+    });
+
   afterAll(async () => {
     await app.close();
   });
