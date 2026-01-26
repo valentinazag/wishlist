@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { pool } from './db';
+import { pool } from '../common/utils/db';
 import { Wishlist } from '../domain/Wishlist';
 
 
@@ -63,7 +63,8 @@ export class WishlistRepository {
 
     const result = await pool.query( 
       `UPDATE wishlist
-       SET is_active = TRUE
+       SET is_active = TRUE,
+       update_date = CURRENT_TIMESTAMP
        WHERE id_user = $1 AND id_product = $2
        RETURNING *`,
     [dataWishlist.idUser, dataWishlist.idProduct],
@@ -90,7 +91,8 @@ export class WishlistRepository {
     }
 
     const result = await pool.query(
-        `UPDATE wishlist SET is_active = FALSE 
+        `UPDATE wishlist SET is_active = FALSE,
+         update_date = CURRENT_TIMESTAMP 
          WHERE id_user = $1 AND id_product = $2 AND is_active = TRUE
          RETURNING *`,
        [dataWishlist.idUser, dataWishlist.idProduct]
