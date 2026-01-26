@@ -29,4 +29,8 @@ export class UsersService {
     await this.productsService.findOne(newProduct.idProduct);
     return await this.wishlitRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
   }
-}
+
+  async deleteItemWishlist(idUser: number, idProduct: string) {
+    return await this.wishlitRepository.deleteItemWishlist({idUser, idProduct});
+  }
+  }

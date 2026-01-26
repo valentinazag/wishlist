@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { pool } from './db';
 import { Wishlist } from '../domain/Wishlist';
 
@@ -35,9 +35,17 @@ export class WishlistRepository {
 
   async deleteItemWishlist(dataWishlist: { idUser: number; idProduct: string }){
     const result = await pool.query(
-       `UPDATE wishlist SET is_active ='FALSE' WHERE id_user = $1 AND id_product = $2 `,
+       `UPDATE wishlist SET is_active = FALSE 
+        WHERE id_user = $1 AND id_product = $2 AND is_active = TRUE
+        RETURNING *`,
        [dataWishlist.idUser, dataWishlist.idProduct]
     );
-    return await new Wishlist(result.rows[0]);
+    if (result.rows.length === 0) {
+      throw new HttpException(
+        `El producto ${dataWishlist.idProduct} no se encuentra en la Wishlist del usuario ${dataWishlist.idUser}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return new Wishlist(result.rows[0]);
   }
 }

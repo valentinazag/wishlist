@@ -35,4 +35,17 @@ export class UsersController {
       }
     }
 
+    @Delete(':idUser/wishlist/:idProduct')
+    async deleteItemWishlist(
+        @Param('idUser') idUser: string,
+        @Param('idProduct') idProduct: string){
+        const idUserParsed = Number(idUser)
+       try{
+        return await this.usersService.deleteItemWishlist(idUserParsed, idProduct)
+       }
+      catch(error){
+         this.errorHandler.handleError(error);
+      }
+    }
+
 }
