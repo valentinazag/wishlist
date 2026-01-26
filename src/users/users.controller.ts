@@ -26,8 +26,6 @@ export class UsersController {
         @Body() newProduct: WishlistDto){
         const idUserParsed = Number(idUser)
        try{
-        console.log(newProduct)
-        console.log(idUserParsed)
         return await this.usersService.AddItemWishlist (idUserParsed, newProduct)
        }
       catch(error){

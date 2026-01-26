@@ -6,9 +6,11 @@ import { Wishlist } from '../domain/Wishlist';
 @Injectable()
 export class WishlistRepository {
 
-  async findWishlistProducts (idUser) {
+  async findWishlistProducts (idUser : number) {
     const result = await pool.query(
-      `SELECT id_product FROM wishlist WHERE id_user = $1 AND is_active IS TRUE`,
+      `SELECT id, id_user, id_product, is_active FROM wishlist 
+      WHERE id_user = $1 
+      AND is_active IS TRUE`,
       [idUser],
     );
       return result.rows.map(row =>
@@ -21,31 +23,78 @@ export class WishlistRepository {
    );
   }
   
+  
+  async findWishlistItem (dataWishlist: { idUser: number; idProduct: string }) {
+    const result = await pool.query(
+    `SELECT id, id_user, id_product, is_active
+     FROM wishlist
+     WHERE id_user = $1 AND id_product = $2`,
+    [dataWishlist.idUser, dataWishlist.idProduct],
+  );
+  if (result.rows.length === 0) {
+    return null;
+  }
+  return new Wishlist({
+    id: result.rows[0].id,
+    idUser: result.rows[0].id_user,
+    idProduct: result.rows[0].id_product,
+    isActive: result.rows[0].is_active,
+  });
+}
 
   async AddItemWishlist (dataWishlist: { idUser: number; idProduct: string }) {
-    const result = await pool.query(
+   const itemExist  = await this.findWishlistItem(dataWishlist)
+   if(!itemExist){
+     const result = await pool.query(
       `INSERT INTO wishlist (id_user, id_product)
        VALUES ($1, $2)
        RETURNING *`,
       [dataWishlist.idUser, dataWishlist.idProduct],
     );
     return await new Wishlist(result.rows[0]);
-  }
+   }
+
+   if(itemExist.isActive){
+     throw new HttpException(
+      'El producto ya etsa en la wishlist',
+      HttpStatus.NOT_FOUND,
+    );
+   }
+
+    const result = await pool.query( 
+      `UPDATE wishlist
+       SET is_active = TRUE
+       WHERE id_user = $1 AND id_product = $2
+       RETURNING *`,
+    [dataWishlist.idUser, dataWishlist.idProduct],
+  );
+  return new Wishlist(result.rows[0]);
+}
 
 
   async deleteItemWishlist(dataWishlist: { idUser: number; idProduct: string }){
-    const result = await pool.query(
-       `UPDATE wishlist SET is_active = FALSE 
-        WHERE id_user = $1 AND id_product = $2 AND is_active = TRUE
-        RETURNING *`,
-       [dataWishlist.idUser, dataWishlist.idProduct]
-    );
-    if (result.rows.length === 0) {
-      throw new HttpException(
+    const itemExist  = await this.findWishlistItem(dataWishlist)
+
+    if(!itemExist){
+        throw new HttpException(
         `El producto ${dataWishlist.idProduct} no se encuentra en la Wishlist del usuario ${dataWishlist.idUser}`,
         HttpStatus.NOT_FOUND
       );
     }
+
+    if(!itemExist.isActive){
+        throw new HttpException(
+        `El producto ${dataWishlist.idProduct} no se encuentra en la Wishlist del usuario ${dataWishlist.idUser}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    const result = await pool.query(
+        `UPDATE wishlist SET is_active = FALSE 
+         WHERE id_user = $1 AND id_product = $2 AND is_active = TRUE
+         RETURNING *`,
+       [dataWishlist.idUser, dataWishlist.idProduct]
+    );
     return new Wishlist(result.rows[0]);
   }
 }
