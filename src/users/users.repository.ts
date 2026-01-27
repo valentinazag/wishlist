@@ -51,7 +51,12 @@ export class WishlistRepository {
        RETURNING *`,
       [dataWishlist.idUser, dataWishlist.idProduct],
     );
-    return await new Wishlist(result.rows[0]);
+    return new Wishlist({
+      id: result.rows[0].id,
+      idUser: result.rows[0].id_user,
+      idProduct: result.rows[0].id_product,
+      isActive: result.rows[0].is_active
+    });
    }
 
    if(itemExist.isActive){
@@ -66,7 +71,12 @@ export class WishlistRepository {
        RETURNING *`,
     [dataWishlist.idUser, dataWishlist.idProduct],
   );
-  return new Wishlist(result.rows[0]);
+  return new Wishlist({
+    id: result.rows[0].id,
+    idUser: result.rows[0].id_user,
+    idProduct: result.rows[0].id_product,
+    isActive: result.rows[0].is_active
+  });
 }
 
 
@@ -88,6 +98,11 @@ export class WishlistRepository {
          RETURNING *`,
        [dataWishlist.idUser, dataWishlist.idProduct]
     );
-    return new Wishlist(result.rows[0]);
+    return new Wishlist({
+      id: result.rows[0].id,
+      idUser: result.rows[0].id_user,
+      idProduct: result.rows[0].id_product,
+      isActive: result.rows[0].is_active
+    });
   }
 }
