@@ -24,7 +24,6 @@ export class UsersService {
         return wishlistProducts;
     }
 
-
     async AddItemWishlist (idUser: number, newProduct: WishlistDto) {
     await this.productsService.findOne(newProduct.idProduct);
     const result = await this.wishlitRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
@@ -38,9 +37,6 @@ export class UsersService {
     const result = await this.wishlitRepository.deleteItemWishlist({idUser, idProduct});
     if(result === 'NOT_FOUND'){
       throw 'NOT_FOUND'
-    }
-    if(result ==='ALREADY_DELETED'){
-      throw 'ALREADY_DELETED';
     }
     return result;
   }

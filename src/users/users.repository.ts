@@ -43,7 +43,12 @@ export class WishlistRepository {
 }
 
   async AddItemWishlist (dataWishlist: { idUser: number; idProduct: string }) {
-   const itemExist  = await this.findWishlistItem(dataWishlist)
+   const itemExist  = await this.findWishlistItem(dataWishlist);
+
+   if(itemExist?.isActive){
+     return 'ALREADY_EXIST'
+   }
+
    if(!itemExist){
      const result = await pool.query(
       `INSERT INTO wishlist (id_user, id_product)
@@ -59,10 +64,7 @@ export class WishlistRepository {
     });
    }
 
-   if(itemExist.isActive){
-     return 'ALREADY_EXIST'
-   }
-
+  
     const result = await pool.query( 
       `UPDATE wishlist
        SET is_active = TRUE,
@@ -85,10 +87,6 @@ export class WishlistRepository {
 
     if(!itemExist){
        return 'NOT_FOUND'
-    }
-
-    if(!itemExist.isActive){
-       return 'ALREADY_DELETED'
     }
 
     const result = await pool.query(
