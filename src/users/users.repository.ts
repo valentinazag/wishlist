@@ -1,12 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {Injectable } from '@nestjs/common';
 import { pool } from '../common/utils/db';
 import { Wishlist } from '../domain/Wishlist';
 
 
 @Injectable()
 export class WishlistRepository {
+private mappingtoDomain(row: any): Wishlist {
+    return new Wishlist({
+      id: row.id,
+      idUser: row.id_user,
+      idProduct: row.id_product,
+      isActive: row.is_active,
+    });
+  }
 
-  async findWishlistProducts (idUser : number) {
+  async findWishlistProducts (idUser : number): Promise<Wishlist[]>{
     const result = await pool.query(
       `SELECT id, id_user, id_product, is_active FROM wishlist 
       WHERE id_user = $1 
@@ -14,17 +22,12 @@ export class WishlistRepository {
       [idUser],
     );
       return result.rows.map(row =>
-      new Wishlist({
-      id: row.id,
-      idUser: row.id_user,
-      idProduct: row.id_product,
-      isActive: row.is_active
-    }),
+      this.mappingtoDomain(row)
    );
   }
   
   
-  async findWishlistItem (dataWishlist: { idUser: number; idProduct: string }) {
+  async findWishlistItem (dataWishlist: { idUser: number; idProduct: string }):Promise<Wishlist | null>{
     const result = await pool.query(
     `SELECT id, id_user, id_product, is_active
      FROM wishlist
@@ -34,15 +37,10 @@ export class WishlistRepository {
   if (result.rows.length === 0) {
     return null;
   }
-  return new Wishlist({
-    id: result.rows[0].id,
-    idUser: result.rows[0].id_user,
-    idProduct: result.rows[0].id_product,
-    isActive: result.rows[0].is_active,
-  });
+  return this.mappingtoDomain(result.rows[0])
 }
 
-  async AddItemWishlist (dataWishlist: { idUser: number; idProduct: string }) {
+  async AddItemWishlist (dataWishlist: { idUser: number; idProduct: string }):Promise<Wishlist | string> {
    const itemExist  = await this.findWishlistItem(dataWishlist);
 
    if(itemExist?.isActive){
@@ -56,12 +54,7 @@ export class WishlistRepository {
        RETURNING *`,
       [dataWishlist.idUser, dataWishlist.idProduct],
     );
-    return new Wishlist({
-      id: result.rows[0].id,
-      idUser: result.rows[0].id_user,
-      idProduct: result.rows[0].id_product,
-      isActive: result.rows[0].is_active
-    });
+    return this.mappingtoDomain(result.rows[0])
    }
 
   
@@ -73,16 +66,11 @@ export class WishlistRepository {
        RETURNING *`,
     [dataWishlist.idUser, dataWishlist.idProduct],
   );
-  return new Wishlist({
-    id: result.rows[0].id,
-    idUser: result.rows[0].id_user,
-    idProduct: result.rows[0].id_product,
-    isActive: result.rows[0].is_active
-  });
+   return this.mappingtoDomain(result.rows[0])
 }
 
 
-  async deleteItemWishlist(dataWishlist: { idUser: number; idProduct: string }){
+  async deleteItemWishlist(dataWishlist: { idUser: number; idProduct: string }):Promise<Wishlist | string> {
     const itemExist  = await this.findWishlistItem(dataWishlist)
 
     if(!itemExist){
@@ -96,11 +84,6 @@ export class WishlistRepository {
          RETURNING *`,
        [dataWishlist.idUser, dataWishlist.idProduct]
     );
-    return new Wishlist({
-      id: result.rows[0].id,
-      idUser: result.rows[0].id_user,
-      idProduct: result.rows[0].id_product,
-      isActive: result.rows[0].is_active
-    });
+    return this.mappingtoDomain(result.rows[0])
   }
 }

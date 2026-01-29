@@ -14,7 +14,7 @@ export class ErrorHandlerProducts extends ErrorHandlerCommon{
       case 500:
         throw new HttpException(
           "error servidor externo",
-        HttpStatus.SERVICE_UNAVAILABLE,
+        HttpStatus.INTERNAL_SERVER_ERROR,
     );
       default:
        super.handler(error);
