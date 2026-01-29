@@ -44,7 +44,7 @@ private mappingtoDomain(row: any): Wishlist {
    const itemExist  = await this.findWishlistItem(dataWishlist);
 
    if(itemExist?.isActive){
-     return 'ALREADY_EXIST'
+     throw 'ALREADY_EXIST'
    }
 
    if(!itemExist){
@@ -74,7 +74,7 @@ private mappingtoDomain(row: any): Wishlist {
     const itemExist  = await this.findWishlistItem(dataWishlist)
 
     if(!itemExist){
-       return 'NOT_FOUND'
+       throw 'NOT_FOUND'
     }
 
     const result = await pool.query(

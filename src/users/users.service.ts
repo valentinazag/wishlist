@@ -29,17 +29,11 @@ export class UsersService {
     async AddItemWishlist (idUser: number, newProduct: WishlistDto): Promise<Wishlist | string> {
     await this.productsService.findOne(newProduct.idProduct);
     const result = await this.wishlistRepository.AddItemWishlist ({idUser, idProduct : newProduct.idProduct});
-      if(result === 'ALREADY_EXIST'){
-        throw 'ALREADY_EXIST';
-      }
     return result;
   }
 
   async deleteItemWishlist(idUser: number, idProduct: string): Promise<Wishlist | string> {
     const result = await this.wishlistRepository.deleteItemWishlist({idUser, idProduct});
-    if(result === 'NOT_FOUND'){
-      throw 'NOT_FOUND'
-    }
     return result;
   }
 }
